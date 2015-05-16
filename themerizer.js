@@ -3,16 +3,21 @@ Author: Peter "Coburn" Fornari
 
 This is the main script which initializes and does everything
 */
-function(Themerizer){
+function isDef(o)
+{
+	return !(typeof(o)==='undefined'||o==null);
+}
+
+(function(Themerizer){
 	//Defaults
-	var loc = this.loc = { "isReady" : true };
+	var loc = Themerizer.loc = { "isReady" : true };
 	loc.pageType = "unknown";
 	loc.pageNumber = 1;
 	loc.pageRequest = null;
 	
 	//Quick check for 404
 	{block:PostTitle}
-		var postTitle = {PostTitle};
+		var postTitle = {JSPostTitle};
 		if(postTitle === "Not Found")
 		{
 			loc.pageType = "notFound";
@@ -31,13 +36,14 @@ function(Themerizer){
 	{/block:IndexPage}
 	
 	//Tag search page
+	//If tag is not found, it actually gives a notFound error
 	{block:TagPage}
 		loc.pageType = "tagPage";
 		loc.pageRequest = {
-			"tag" : {Tag},
-			"urlSafeTag" : {URLSafeTag},
-			"tagUrl" : {TagURL},
-			"tagUrlChrono" : {TagURLChrono}
+			"tag" : {JSTag},
+			"urlSafeTag" : {JSURLSafeTag}
+			//"tagUrl" : {JSTagURL}, //Comes up as blank sometimes?
+			//"tagUrlChrono" : {JSTagURLChrono}
 		};
 		pageDetermined = true;
 	{/block:TagPage}
@@ -46,9 +52,9 @@ function(Themerizer){
 	{block:SearchPage}
 		loc.pageType = "searchPage";
 		loc.pageRequest = {
-			"searchQuery" : {SearchQuery},
-			"urlSafeSearchQuery" : {URLSafeSearchQuery},
-			"resultCount" : {SearchResultCount}
+			"searchQuery" : {JSSearchQuery},
+			"urlSafeSearchQuery" : {JSURLSafeSearchQuery},
+			"resultCount" : {JSSearchResultCount}
 		};
 		pageDetermined = true;
 	{/block:SearchPage}
@@ -75,27 +81,27 @@ function(Themerizer){
 	//We also need to find the page number
 	
 	//Get where we currently are to find where the format of the query for other pages
-	//Link formats
+	//Some of the link formats
 	//http://example.tumblr.com
 	//http://example.tumblr.com/day/year4/month2/day2
 	//http://example.tumblr.com/search/query
 	//Each one of these can have /page/# somewhere in there too
-	var nextQueryUrl = "http://" + location.hostname + "/";
 	var fields = location.pathname.split("/");
-	if((!pageDetermined || loc.pageType === "permalinkPage") && fields.length == 1)
+	//Let permalink fall through because it could be an ask or submit page
+	if((!pageDetermined || loc.pageType === "permalinkPage") && fields.length == 2)
 	{
-		switch(fields[0])
+		switch(fields[1])
 		{
 			case "ask":
-				pageType = "ask";
+				loc.pageType = "askPage";
 			break;
 			case "submit":
-				pageType = "submit";
+				loc.pageType = "submitPage";
 			break;
 			default:
-				pageType = "customPage";
-				pageRequest = {
-					"pageName" : fields[0]
+				loc.pageType = "customPage";
+				loc.pageRequest = {
+					"pageName" : fields[1]
 				};
 			break;
 		}
@@ -107,26 +113,36 @@ function(Themerizer){
 		{
 			if(!pageDetermined && fields[i] == "tagged" && isDef(fields[i+1]))
 			{
-				pageType = "tagPage";
-				pageRequest = {
+				loc.pageType = "tagPage";
+				loc.pageRequest = {
 					"tag" : fields[i+1]
-				}
+				};
 				i++;
 				pageDetermined = true;
 			}
 			else if(!pageDetermined && fields[i] == "search"  && isDef(fields[i+1]))
 			{
-				pageType = "searchPage";
-				pageRequest = {
+				loc.pageType = "searchPage";
+				loc.pageRequest = {
 					"search" : fields[i+1]
 				};
 				i++;
 				pageDetermined = true;
 			}
+			else if(fields[i] == "post" && isDef(fields[i+1]) && isDef(fields[i+2]))
+			{
+				loc.pageType = "permalinkPage";
+				loc.pageRequest = {
+					"postId" : fields[i+1],
+					"postTitle" : fields[i+2]
+				};
+				i+=2;
+				pageDetermined = true;
+			}
 			else if(fields[i] == "day" && isDef(fields[i+1]) && isDef(fields[i+2]) && isDef(fields[i+1]))
 			{
-				pageType = "dayPage";
-				pageRequest = {
+				loc.pageType = "dayPage";
+				loc.pageRequest = {
 					"year" : fields[i+1],
 					"month" : fields[i+2],
 					"day" : fields[i+3]
@@ -136,19 +152,18 @@ function(Themerizer){
 			}
 			else if(fields[i] == "page" && isDef(fields[i+1]))
 			{
-				pageNumber = parseInt(fields[i+1]);
+				loc.pageNumber = parseInt(fields[i+1]);
 				i++;
 			}
 			else if(!pageDetermined)
 			{
-				pageType = "customPage";
-				pageRequest = {
-					"pageName" : fields.join("/");
+				loc.pageType = "customPage";
+				loc.pageRequest = {
+					"pageName" : fields.join("/")
 				};
 				pageDetermined = true;
 				break;
 			}
 		}
 	}
-};
-}(window.Themerizer = window.Themerizer || {});
+})(window.Themerizer = window.Themerizer || {});
