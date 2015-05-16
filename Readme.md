@@ -13,19 +13,21 @@ USAGE:
  * Use the global `Themerizer` and get `.loc`
  * Use `.pageType`, `.pageNumber`, and `.pageRequest` to get...
  
-```Themerizer.loc.pageType =
+```javascript
+Themerizer.loc.pageType = //Gets the page type, listed below
 "unknown"
-|| "notFound"
-|| "frontPage"
-|| "tagPage"
-|| "searchPage"
+|| "notFound" //404, post not found
+|| "frontPage" //Front page of blog
+|| "tagPage" //Tag search
+|| "searchPage" //Text string earch
 || "dayPage"
-|| "permalinkPage"
+|| "permalinkPage" //Only post permalink
 || "askPage"
 || "submitPage"
-|| "customPage"
+|| "customPage" //User defined page (check pageRequest for the page name)
 
-Themerizer.loc.pageNumber = if /page/# appears in the url, we'll get it
+Themerizer.loc.pageNumber = 1; //If /page/# appears in the url, we'll get it, otherwise 1
 
 Themerizer.loc.pageRequest = An object with a bunch of data on it
-or like no data depending on the pageType (you'll have to read below)```
+or like no data depending on the pageType (you'll have to read below)
+```
