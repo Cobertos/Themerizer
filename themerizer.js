@@ -11,7 +11,7 @@ function isDef(o)
 (function(Themerizer){
 	
 	var tumblr = Themerizer.t;
-	if(!isDef(t))
+	if(!isDef(tumblr))
 	{
 		console.log("Wrong script order");
 		return;
