@@ -5,7 +5,7 @@ This is the main script which initializes and does everything
 */
 function isDef(o)
 {
-	return !(typeof(o)==='undefined'||o==null);
+	return !(typeof(o)==='undefined'||o===null);
 }
 
 (function(Themerizer){
