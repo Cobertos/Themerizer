@@ -9,6 +9,14 @@ function isDef(o)
 }
 
 (function(Themerizer){
+	
+	var tumblr = Themerizer.t;
+	if(!isDef(t))
+	{
+		console.log("Wrong script order");
+		return;
+	}
+	
 	//Defaults
 	var loc = Themerizer.loc = { "isReady" : true };
 	loc.pageType = "unknown";
@@ -16,60 +24,66 @@ function isDef(o)
 	loc.pageRequest = null;
 	
 	//Quick check for 404
-	{block:PostTitle}
+	if(tumblr["block:PostTitle"])
+	{
 		var postTitle = {JSPostTitle};
 		if(postTitle === "Not Found")
 		{
 			loc.pageType = "notFound";
 			return;
 		}
-	{/block:PostTitle}
+	}
 	
 	//Trust tumblrs output vs our search
 	var pageDetermined = false;
 	
 	//Main page only? The docs don't seem to say yes
 	//but testing says yes sooooo...
-	{block:IndexPage}
+	if(tumblr["block:IndexPage"])
+	{
 		loc.pageType = "frontPage";
 		pageDetermined = true;
-	{/block:IndexPage}
+	}
 	
 	//Tag search page
 	//If tag is not found, it actually gives a notFound error
-	{block:TagPage}
+	if(tumblr["block:TagPage"])
+	{
 		loc.pageType = "tagPage";
 		loc.pageRequest = {
-			"tag" : {JSTag},
-			"urlSafeTag" : {JSURLSafeTag}
-			//"tagUrl" : {JSTagURL}, //Comes up as blank sometimes?
-			//"tagUrlChrono" : {JSTagURLChrono}
+			"tag" : tumblr["block:tag"],
+			"urlSafeTag" : tumblr["block:urlSafeTag"],
+			"tagUrl" : tumblr["block:tagUrl"],
+			"tagUrlChrono" : tumblr["block:tagUrlChrono"]
 		};
 		pageDetermined = true;
-	{/block:TagPage}
+	}
 	
 	//Search page
-	{block:SearchPage}
+	if(tumblr["block:SearchPage"])
+	{
 		loc.pageType = "searchPage";
 		loc.pageRequest = {
-			"searchQuery" : {JSSearchQuery},
-			"urlSafeSearchQuery" : {JSURLSafeSearchQuery},
-			"resultCount" : {JSSearchResultCount}
+			"searchQuery" : tumblr["searchQuery"],
+			"urlSafeSearchQuery" : tumblr["urlSafeSearchQuery"],
+			"searchResultCount" : tumblr["searchResultCount"]
 		};
 		pageDetermined = true;
-	{/block:SearchPage}
+	}
 	
 	//Day page
-	{block:DayPage}
+	if(tumblr["block:DayPage"])
+	{
 		loc.pageType = "dayPage";
 		pageDetermined = true;
-	{/block:DayPage}
+	}
 	
 	//Permalink page (also ask, submit, and other pages)
-	{block:PermalinkPage}
+	if(tumblr["block:PermalinkPage"])
+	{
 		loc.pageType = "permalinkPage";
 		pageDetermined = true;
-	{/block:PermalinkPage}
+	}
 	
 	//The following page types need a search of the URL string to determine where we are
 	//pageType = "permalinkPage"; Needs more info

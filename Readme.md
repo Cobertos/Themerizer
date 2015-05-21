@@ -10,6 +10,7 @@ NOTE:
  
 USAGE:
  * Load the script in your Tumblr theme
+ * Paste the script `themerizerEmbed.js` into a `<script>` tag at the top of your theme
  * Use the global `Themerizer` and get `.loc`
  * Use `.pageType`, `.pageNumber`, and `.pageRequest` to get...
  
