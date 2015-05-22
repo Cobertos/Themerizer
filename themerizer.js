@@ -13,7 +13,8 @@ function isDef(o)
 	var tumblr = Themerizer.t;
 	if(!isDef(tumblr))
 	{
-		console.log("Wrong script order");
+		console.log("Themerizer: Embed script not found");
+		window.Themerizer = null;
 		return;
 	}
 	

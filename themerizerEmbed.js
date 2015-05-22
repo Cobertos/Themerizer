@@ -7,7 +7,7 @@ Otherwise we can't get any variables
 function n(o){return (typeof(o)==='undefined' ? null : o);}
 
 (function(Themerizer){
-Themerizer.t{
+Themerizer.t={
 "block:PostTitle" : /*{block:PostTitle}*/true ||/*{/block:PostTitle}*/false,
 "postTitle" : n({JSPostTitle}),
 
