@@ -27,7 +27,7 @@ function isDef(o)
 	//Quick check for 404
 	if(tumblr["block:PostTitle"])
 	{
-		var postTitle = {JSPostTitle};
+		var postTitle = tumblr["postTitle"];
 		if(postTitle === "Not Found")
 		{
 			loc.pageType = "notFound";
