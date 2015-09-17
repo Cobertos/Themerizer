@@ -5,14 +5,13 @@ A small tool that normalizes the features of Tumblr for javascript for access th
 Licensed under the MIT License (should be included with the source code in LICENSE.txt)
 
 NOTE:
- * The only thing that this is current useful for right now is for finding the current page type.
- * Handles custom pages that have '/' but not custom pages named as other default pages (probably shouldn't do that anyway)
+ * Right now finds current page type, page number, and other page related info
+ * It WILL handle custom pages that have a '/' in them but not custom pages named as other default pages (probably shouldn't do that anyway)
  
 USAGE:
- * Load the script in your Tumblr theme
- * Paste the script `themerizerEmbed.js` into a `<script>` tag at the top of your theme
- * Use the global `Themerizer` and get `.loc`
- * Use `.pageType`, `.pageNumber`, and `.pageRequest` to get...
+ * Load `themerizer.js` into your theme (with the static uploader or something like RawGit)
+ * Paste the script `themerizerEmbed.js` into a `<script>` tag at the top of your theme. **It must be directly in the theme, not in a `<script>` tag's `src`!**
+ * You now have access to the global `Themerizer` which contains...
  
 ```javascript
 Themerizer.loc.pageType = //Gets the page type, listed below
@@ -29,6 +28,6 @@ Themerizer.loc.pageType = //Gets the page type, listed below
 
 Themerizer.loc.pageNumber = 1; //If /page/# appears in the url, we'll get it, otherwise 1
 
-Themerizer.loc.pageRequest = An object with a bunch of data on it
-or like no data depending on the pageType (you'll have to read below)
+Themerizer.loc.pageRequest = An object with the other Tumblr theme
+related data (lots of data or none depending on the page type).
 ```
